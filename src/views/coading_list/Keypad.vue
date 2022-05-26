@@ -1,46 +1,24 @@
 <template>
   <div class="keypad">
     <h3 @click="goAuthor" class="authorship">
-    출처: https://programmers.co.kr/learn/courses/30/lessons/67256
+      출처: https://programmers.co.kr/learn/courses/30/lessons/67256
     </h3>
-    <ul class="wrap">
-      <li>
-        <img
-          src="../../assets/img/programmers/67256.png"
-          alt="프로그래머스_67256_문제사진"
-        />
-      </li>
-      <li>
-        <ol class="text ex-wrap">
-          <li >
-            <p>키패드에 들어갈 숫자 ex) 1, 2, 3, 4, 5, 6, 7, 8, 9, 0 </p>
-            => <input type="number" id="number-input" />
-          </li>
-          <li>
-            <p>주로 쓰는 손 ex) "left" </p>
-            => <input type="text" id="hand-input" />
-          </li>
-          <li>
-            <button class="text btn" @click="submit">제출</button>
-          </li>
-
-          <li v-if="state.result">
-            <p>결과값 => </p>
-            <p> {{state.inputValue}} </p>
-            <p> {{state.result}} </p>
-          </li>
-        </ol>
-      </li>
-    </ul>
+    
+    <div class="wrap ">
+      <tQuestion />
+      <tResult :inputValue="state.inputValue" :result="state.result"/>
+    </div>
 
     <tPopup :isVisible="state.isPopup" :text="state.popupText" @close="state.isPopup=false" />
   </div>
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import tQuestion from '@/components/template/67256keypad/tQuestion.vue'
+import tResult from '@/components/template/67256keypad/tResultSpace.vue'
 import tPopup from '@/components/template/popup.vue'
 import { useStore } from 'vuex';
+import { reactive } from 'vue'
 
 const store= useStore()
 const state = reactive({
@@ -77,12 +55,11 @@ const submit =async()=>{
 }
 
 const getResult =async (numbers: Array<number>, hand: string)=>{
-  console.error(numbers, hand)
   let answer = ''
 	const mainHand = hand[0].toUpperCase()
 
-	for (const num of numbers) {
-    console.error(num)
+	for (let num of numbers) {
+    num = +num
 		if ([1, 4, 7].includes(num)) {
 		handPos.left = num.toString()
 		answer += 'L'
@@ -138,18 +115,22 @@ const openPopup = (text: string) =>{
 <style lang="scss" scoped>
 .keypad{
   background: #2d3747;
+  color: #bcbcbc;
   .authorship{
     color: #fff;
     padding: 10px;
     cursor: pointer;
   }
   .wrap {
-  display: flex;
-  flex-wrap:wrap;
-  justify-content: space-between;
+    @apply relative flex flex-wrap justify-between ;
+    max-width: 100%;
+    min-width: 930px;
   }
-  .popup{
-    position: fixed;
+
+  .question_wrap{
+    @apply  flex flex-col gap-20 ;
+    max-width: 70%;
+    min-width: 640px;
   }
 
   .ex-wrap{
@@ -158,11 +139,10 @@ const openPopup = (text: string) =>{
     gap: 20px;
   }
 
-  .text {
-    color: #bcbcbc
-  }
   .btn{
+    color: #bcbcbc;
     padding: 10px;
+    margin: 10px 0;
     border:2px #bcbcbc solid;
     border-radius: 4px;
   }
